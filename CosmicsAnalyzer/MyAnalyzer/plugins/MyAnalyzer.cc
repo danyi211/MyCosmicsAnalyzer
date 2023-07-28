@@ -34,6 +34,8 @@
 #include "DataFormats/TrackingRecHit/interface/TrackingRecHit.h"
 #include "DataFormats/HepMCCandidate/interface/GenParticle.h"
 #include "DataFormats/GeometryVector/interface/GlobalPoint.h"
+#include "DataFormats/DetId/interface/DetId.h"
+#include "DataFormats/MuonDetId/interface/MuonSubdetId.h"
 
 // use TFileService
 #include "FWCore/ServiceRegistry/interface/Service.h"
@@ -187,11 +189,14 @@ void MyAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
       const TrackingRecHit* recHit = *hit;
       if (recHit->isValid()) {
         // GlobalPoint globalPos = recHit->globalPosition();
-        const GeomDet* dtDet = muonDTGeom->idToDet(recHit->geographicalId());
-        GlobalPoint globalPoint = dtDet->toGlobal(recHit->localPosition());
-        track_dtSeg_glbX_[track_n_][track_recHits_n_] = globalPoint.x();
-        track_dtSeg_glbY_[track_n_][track_recHits_n_] = globalPoint.y();
-        track_dtSeg_glbZ_[track_n_][track_recHits_n_] = globalPoint.z();
+        DetId hitId = recHit->geographicalId();
+        if (hitId.det() == DetId::Muon && hitId.subdetId() == MuonSubdetId::DT){
+          const GeomDet* dtDet = muonDTGeom->idToDet(hitId);
+          GlobalPoint globalPoint = dtDet->toGlobal(recHit->localPosition());
+          track_dtSeg_glbX_[track_n_][track_recHits_n_] = globalPoint.x();
+          track_dtSeg_glbY_[track_n_][track_recHits_n_] = globalPoint.y();
+          track_dtSeg_glbZ_[track_n_][track_recHits_n_] = globalPoint.z();
+        }
         track_recHits_n_ ++;
       }
     }
