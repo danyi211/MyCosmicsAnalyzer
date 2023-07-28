@@ -4,4 +4,6 @@
 <use name="FWCore/PluginManager"/>
 <use name="PhysicsTools/UtilAlgos"/>
 <use name="FWCore/ServiceRegistry"/> # GF: Not sure whether really needed...
+<use name="Geometry/Records"/>
+<use name="Geometry/DTGeometry"/>
 <flags EDM_PLUGIN="1"/>
